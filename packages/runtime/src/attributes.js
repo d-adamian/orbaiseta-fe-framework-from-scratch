@@ -10,7 +10,7 @@ export function setAttributes(el, attrs) {
   }
 
   for (const [name, value] of Object.entries(otherAttributes)) {
-    setAttributes(el, name, value);
+    setAttribute(el, name, value);
   }
 }
 
