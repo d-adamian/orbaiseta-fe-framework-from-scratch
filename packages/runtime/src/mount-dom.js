@@ -2,41 +2,41 @@ import { setAttributes } from "./attributes";
 import { addEventListeners } from "./events";
 import { DOM_TYPES } from "./h";
 
-export function mountDom(vdom, parentEl) {
+export function mountDom(vdom, parentEl, index) {
   switch (vdom.type) {
     case DOM_TYPES.TEXT:
-      createTextNode(vdom, parentEl);
+      createTextNode(vdom, parentEl, index);
       break;
     case DOM_TYPES.ELEMENT:
-      createElementNode(vdom, parentEl);
+      createElementNode(vdom, parentEl, index);
       break;
     case DOM_TYPES.FRAGMENT:
-      createFragmentNode(vdom, parentEl);
+      createFragmentNode(vdom, parentEl, index);
       break;
     default:
       throw new Error(`Can't mount DOM of type: ${vdom.type}`);
   }
 }
 
-function createTextNode(vdom, parentEl) {
+function createTextNode(vdom, parentEl, index) {
   const { value } = vdom;
 
   const textNode = document.createTextNode(value);
   vdom.el = textNode;
 
-  parentEl.appendChild(textNode);
+  insert(textNode, parentEl, index);
 }
 
-function createFragmentNode(vdom, parentEl) {
+function createFragmentNode(vdom, parentEl, index) {
   const { children } = vdom;
   vdom.el = parentEl;
 
-  children.forEach((child) => {
-    mountDom(child, parentEl);
+  children.forEach((child, i) => {
+    mountDom(child, parentEl, index ? index + i : null);
   });
 }
 
-function createElementNode(vdom, parentEl) {
+function createElementNode(vdom, parentEl, index) {
   const { tag, props, children } = vdom;
 
   const element = document.createElement(tag);
@@ -46,7 +46,7 @@ function createElementNode(vdom, parentEl) {
   children.forEach((child) => {
     mountDom(child, element);
   });
-  parentEl.appendChild(element);
+  insert(element, parentEl, index);
 }
 
 function addProps(el, props, vdom) {
@@ -54,4 +54,23 @@ function addProps(el, props, vdom) {
 
   vdom.listeners = addEventListeners(events, el);
   setAttributes(el, attrs);
+}
+
+function insert(el, parentEl, index) {
+  if (index === null || index === undefined) {
+    parentEl.append(el);
+    return;
+  }
+
+  if (index < 0) {
+    throw new Error(`Index must be a positive integer, got ${index}`);
+  }
+
+  const children = parentEl.childNodes;
+
+  if (index >= children.length) {
+    parentEl.append(el);
+  } else {
+    parentEl.insertBefore(el, children[index]);
+  }
 }
