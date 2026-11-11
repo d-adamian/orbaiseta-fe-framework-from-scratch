@@ -92,7 +92,7 @@ function CreateTodo({ currentTodo }, emit) {
         disabled: currentTodo.length < 3,
         on: { click: () => emit("add-todo") },
       },
-      ["Add"]
+      ["Add"],
     ),
     ,
   ]);
@@ -102,7 +102,7 @@ function TodoList({ TODO, edit }, emit) {
   return h(
     "ul",
     {},
-    TODO.map((todo, i) => TodoItem({ todo, i, edit }, emit))
+    TODO.map((todo, i) => TodoItem({ todo, i, edit }, emit)),
   );
 }
 

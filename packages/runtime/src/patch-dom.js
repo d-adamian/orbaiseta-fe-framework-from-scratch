@@ -1,6 +1,6 @@
 import { areNodesEqual } from "./nodes-equal";
 import { destroyDOM } from "./destroy-dom";
-import { mountDom } from "./mount-dom";
+import { mountDOM } from "./mount-dom";
 import { DOM_TYPES, extractChildren } from "./h";
 import { objectsDiff } from "./utils/objects";
 import {
@@ -17,7 +17,7 @@ export function patchDOM(oldVdom, newVdom, parentEl) {
   if (!areNodesEqual(oldVdom, newVdom)) {
     const index = findIndexInParent(parentEl, oldVdom.el);
     destroyDOM(oldVdom);
-    mountDom(newVdom, parentEl, index);
+    mountDOM(newVdom, parentEl, index);
 
     return newVdom;
   }
@@ -71,7 +71,7 @@ function patchElement(oldVdom, newVdom) {
     style: newStyle,
     on: newEvents,
     ...newAttrs
-  } = oldVdom.props;
+  } = newVdom.props;
   const { listeners: oldListeners } = oldVdom;
 
   patchAttrs(el, oldAttrs, newAttrs);
@@ -153,7 +153,7 @@ function patchChildren(oldVdom, newVdom) {
 
     switch (operation.op) {
       case ARRAY_DIFF_OP.ADD: {
-        mountDom(item, parentEl, index);
+        mountDOM(item, parentEl, index);
         break;
       }
       case ARRAY_DIFF_OP.REMOVE: {
