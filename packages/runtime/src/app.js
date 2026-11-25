@@ -2,8 +2,9 @@ import { destroyDOM } from "./destroy-dom";
 import { Dispatcher } from "./dispatcher";
 import { patchDOM } from "./patch-dom";
 import { mountDOM } from "./mount-dom";
+import { h } from "./h";
 
-export function createApp({ state, view, reducers = {} }) {
+export function createAppNonComponent({ state, view, reducers = {} }) {
   let parentEl = null;
   let vdom = null;
 
@@ -44,6 +45,38 @@ export function createApp({ state, view, reducers = {} }) {
 
     emit(eventName, payload) {
       emit(eventName, payload);
+    },
+  };
+}
+
+export function createApp(RootComponent, props = {}) {
+  let parentEl = null;
+  let isMounted = false;
+  let vdom = null;
+
+  function reset() {
+    parentEl = null;
+    isMounted = false;
+    vdom = null;
+  }
+
+  return {
+    mount(_parentEl) {
+      if (isMounted) {
+        throw new Error("App is already mounted");
+      }
+      parentEl = _parentEl;
+      vdom = h(RootComponent, props);
+      mountDOM(vdom, parentEl);
+      isMounted = true;
+    },
+
+    unmount() {
+      if (!isMounted) {
+        throw new Error("App is not mounted");
+      }
+      destroyDOM(vdom);
+      reset();
     },
   };
 }

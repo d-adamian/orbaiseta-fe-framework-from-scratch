@@ -1,6 +1,6 @@
 {
   "name": "orbaiseta-fe-framework-from-scratch-project",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "A project to learn how to write a frontend framework",
   "private": true,
   "workspaces": [

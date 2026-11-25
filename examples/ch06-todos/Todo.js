@@ -1,5 +1,5 @@
 import {
-  createApp,
+  createAppNonComponent,
   h,
   hFragment,
 } from "../../packages/runtime/dist/orbaiseta-fe-framework-from-scratch.js";
@@ -130,4 +130,4 @@ function TodoItem({ todo, i, edit }, emit) {
   }
 }
 
-createApp({ state, reducers, view: App }).mount(document.body);
+createAppNonComponent({ state, reducers, view: App }).mount(document.body);
